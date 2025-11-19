@@ -1,4 +1,5 @@
 import { sql } from "../db.js";
+import bcrypt from "bcryptjs";
 
 
 export const getUsuarios = async (req, res) => {
@@ -48,7 +49,6 @@ export const crearUsuario = async (req, res) => {
     }
 
     try {
-        // Verificar correo repetido
         const [existe] = await sql.query(
             "SELECT ID_USUARIO FROM USUARIO WHERE CORREO_ELECTRONICO = ? LIMIT 1",
             [correo_electronico]
@@ -57,6 +57,8 @@ export const crearUsuario = async (req, res) => {
         if (existe.length > 0) {
             return res.status(400).json({ message: "El correo ya está registrado" });
         }
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(contrasena, salt);
 
         const [result] = await sql.query(
             `INSERT INTO USUARIO 
@@ -66,7 +68,7 @@ export const crearUsuario = async (req, res) => {
                 nombre,
                 apellido,
                 correo_electronico,
-                contrasena,
+                hashPassword, 
                 telefono,
                 ubicacion,
                 id_rol,
@@ -85,7 +87,6 @@ export const crearUsuario = async (req, res) => {
 };
 
 
-// Actualizar usuario (datos generales)
 export const actualizarUsuario = async (req, res) => {
     const { id } = req.params;
     const {
@@ -141,7 +142,6 @@ export const actualizarUsuario = async (req, res) => {
 };
 
 
-// Eliminar usuario
 export const eliminarUsuario = async (req, res) => {
     const { id } = req.params;
 
@@ -160,9 +160,6 @@ export const eliminarUsuario = async (req, res) => {
     }
 };
 
-
-
-// Verificar correo
 export const verificarCorreo = async (req, res) => {
     const { correo } = req.params;
 
@@ -181,9 +178,6 @@ export const verificarCorreo = async (req, res) => {
     }
 };
 
-
-
-// LOGIN (correo o teléfono + contraseña)
 export const loginUsuario = async (req, res) => {
     const { usuario, contrasena } = req.body;
 
@@ -204,12 +198,12 @@ export const loginUsuario = async (req, res) => {
         }
 
         const user = result[0];
+        const esCorrecta = await bcrypt.compare(contrasena, user.CONTRASENA);
 
-        if (user.CONTRASENA !== contrasena) {
+        if (!esCorrecta) {
             return res.json({ success: false, message: "Contraseña incorrecta" });
         }
 
-        // Si deseas ocultar contraseña:
         delete user.CONTRASENA;
 
         res.json({
@@ -223,7 +217,6 @@ export const loginUsuario = async (req, res) => {
 };
 
 
-
 export const actualizarContrasena = async (req, res) => {
     const { id } = req.params;
     const { contrasena } = req.body;
@@ -232,9 +225,12 @@ export const actualizarContrasena = async (req, res) => {
         return res.status(400).json({ message: "La contraseña es obligatoria" });
 
     try {
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(contrasena, salt);
+
         const [result] = await sql.query(
             "UPDATE USUARIO SET CONTRASENA=? WHERE ID_USUARIO = ?",
-            [contrasena, id]
+            [hashPassword, id]
         );
 
         result.affectedRows > 0
@@ -243,25 +239,5 @@ export const actualizarContrasena = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ message: "Error al actualizar contraseña", error });
-    }
-};
-
-
-
-// Cambiar estado (activo/inactivo)
-export const cambiarEstadoUsuario = async (req, res) => {
-    const { id } = req.params;
-    const { estado } = req.body;
-
-    try {
-        await sql.query(
-            "UPDATE USUARIO SET ESTADO=? WHERE ID_USUARIO=?",
-            [estado, id]
-        );
-
-        res.json({ message: "Estado actualizado correctamente" });
-
-    } catch (error) {
-        res.status(500).json({ message: "Error al cambiar estado", error });
     }
 };
