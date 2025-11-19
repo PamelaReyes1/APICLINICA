@@ -1,4 +1,4 @@
-import { sql } from "../bd.js";
+import { sql } from "../db.js";
 
 export const getMedicos = async (req, res) => {
     try {

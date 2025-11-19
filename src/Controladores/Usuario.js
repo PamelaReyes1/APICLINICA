@@ -1,12 +1,6 @@
-import { sql } from "../bd.js";
+import { sql } from "../db.js";
 
 
-/* ==========================================================
-    USUARIO — CONTROLADORES ACTUALIZADOS
-============================================================ */
-
-
-// Obtener todos los usuarios
 export const getUsuarios = async (req, res) => {
     try {
         const [result] = await sql.query("SELECT * FROM USUARIO");
@@ -18,7 +12,6 @@ export const getUsuarios = async (req, res) => {
 };
 
 
-// Buscar usuario por ID
 export const BuscarUsuarioPorId = async (req, res) => {
     const { id } = req.params;
 
@@ -38,7 +31,6 @@ export const BuscarUsuarioPorId = async (req, res) => {
 };
 
 
-// Crear usuario (con contraseña)
 export const crearUsuario = async (req, res) => {
     const {
         nombre,
