@@ -1,195 +1,113 @@
 import { sql } from "../bd.js";
 
-
-export const getHorarios = async (req, res) => {
+export const getMedicos = async (req, res) => {
     try {
-        const [result] = await sql.query("SELECT * FROM HORARIOS ORDER BY FECHA, HORA_INICIO");
+        const [result] = await sql.query("SELECT * FROM MEDICO");
         res.json({ total: result.length, data: result });
     } catch (error) {
-        res.status(500).json({ message: "Error al obtener horarios", error });
+        res.status(500).json({ message: "Error al obtener médicos", error });
     }
 };
-
-export const getHorarioById = async (req, res) => {
+export const getMedicoById = async (req, res) => {
     const { id } = req.params;
 
     try {
         const [result] = await sql.query(
-            "SELECT * FROM HORARIOS WHERE ID_HORARIO = ?",
+            "SELECT * FROM MEDICO WHERE ID_MEDICO = ?",
             [id]
         );
 
         result.length > 0
             ? res.json(result[0])
-            : res.status(404).json({ message: "Horario no encontrado" });
+            : res.status(404).json({ message: "Médico no encontrado" });
 
     } catch (error) {
-        res.status(500).json({ message: "Error al obtener horario", error });
+        res.status(500).json({ message: "Error al obtener médico", error });
     }
 };
-
-
-// Obtener horarios por médico
-export const getHorariosPorMedico = async (req, res) => {
-    const { id_medico } = req.params;
+export const getMedicosPorEspecialidad = async (req, res) => {
+    const { id_especialidad } = req.params;
 
     try {
         const [result] = await sql.query(
-            `SELECT * 
-             FROM HORARIOS 
-             WHERE ID_MEDICO = ?
-             ORDER BY FECHA, HORA_INICIO`,
-            [id_medico]
+            "SELECT * FROM MEDICO WHERE ID_ESPECIALIDAD = ?",
+            [id_especialidad]
         );
 
         res.json(result);
 
     } catch (error) {
-        res.status(500).json({ message: "Error al obtener horarios del médico", error });
+        res.status(500).json({ message: "Error al obtener médicos por especialidad", error });
     }
 };
 
+export const crearMedico = async (req, res) => {
+    const { id_usuario, id_especialidad, consultorio } = req.body;
 
-// Obtener horarios disponibles para un médico
-export const getHorariosDisponiblesPorMedico = async (req, res) => {
-    const { id_medico } = req.params;
-
-    try {
-        const [result] = await sql.query(
-            `SELECT *
-             FROM HORARIOS
-             WHERE ID_MEDICO = ? AND ESTADO = 'LIBRE'
-             ORDER BY FECHA, HORA_INICIO`,
-            [id_medico]
-        );
-
-        res.json(result);
-
-    } catch (error) {
-        res.status(500).json({ message: "Error al obtener horarios disponibles", error });
-    }
-};
-
-
-// Crear un horario
-export const crearHorario = async (req, res) => {
-    const { id_medico, fecha, hora_inicio, hora_fin } = req.body;
-
-    if (!id_medico || !fecha || !hora_inicio || !hora_fin) {
+    if (!id_usuario || !id_especialidad) {
         return res.status(400).json({ message: "Faltan datos obligatorios" });
     }
 
     try {
-        // Validar que el horario no choque con otro horario del mismo médico
-        const [existe] = await sql.query(
-            `SELECT *
-             FROM HORARIOS
-             WHERE ID_MEDICO = ?
-               AND FECHA = ?
-               AND (
-                    (HORA_INICIO <= ? AND HORA_FIN > ?) OR
-                    (HORA_INICIO < ? AND HORA_FIN >= ?)
-               )
-            `,
-            [id_medico, fecha, hora_inicio, hora_inicio, hora_fin, hora_fin]
-        );
-
-        if (existe.length > 0) {
-            return res.status(400).json({
-                message: "El médico ya tiene un horario que se superpone"
-            });
-        }
-
         const [result] = await sql.query(
-            `INSERT INTO HORARIOS (ID_MEDICO, FECHA, HORA_INICIO, HORA_FIN, ESTADO)
-             VALUES (?, ?, ?, ?, 'LIBRE')`,
-            [id_medico, fecha, hora_inicio, hora_fin]
+            `INSERT INTO MEDICO (ID_USUARIO, ID_ESPECIALIDAD, CONSULTORIO)
+             VALUES (?, ?, ?)`,
+            [id_usuario, id_especialidad, consultorio || null]
         );
 
         res.status(201).json({
-            message: "Horario creado correctamente",
+            message: "Médico creado correctamente",
             id: result.insertId
         });
 
     } catch (error) {
-        res.status(500).json({ message: "Error al crear horario", error });
+        res.status(500).json({ message: "Error al crear médico", error });
     }
 };
 
-
-// Actualizar horario (fecha y horas)
-export const actualizarHorario = async (req, res) => {
+export const actualizarMedico = async (req, res) => {
     const { id } = req.params;
-    const { fecha, hora_inicio, hora_fin, estado } = req.body;
+    const { id_especialidad, consultorio } = req.body;
 
     try {
         const [existe] = await sql.query(
-            "SELECT * FROM HORARIOS WHERE ID_HORARIO = ?",
+            "SELECT * FROM MEDICO WHERE ID_MEDICO = ?",
             [id]
         );
 
-        if (existe.length === 0) {
-            return res.status(404).json({ message: "Horario no encontrado" });
-        }
+        if (existe.length === 0)
+            return res.status(404).json({ message: "Médico no encontrado" });
 
         await sql.query(
-            `UPDATE HORARIOS 
-             SET FECHA=?, HORA_INICIO=?, HORA_FIN=?, ESTADO=?
-             WHERE ID_HORARIO=?`,
-            [fecha, hora_inicio, hora_fin, estado, id]
+            `UPDATE MEDICO SET 
+                ID_ESPECIALIDAD = ?, 
+                CONSULTORIO = ?
+            WHERE ID_MEDICO = ?`,
+            [id_especialidad, consultorio, id]
         );
 
-        res.json({ message: "Horario actualizado correctamente" });
+        res.json({ message: "Médico actualizado correctamente" });
 
     } catch (error) {
-        res.status(500).json({ message: "Error al actualizar horario", error });
+        res.status(500).json({ message: "Error al actualizar médico", error });
     }
 };
 
-
-// Cancelar horario
-export const cancelarHorario = async (req, res) => {
+// Eliminar médico
+export const eliminarMedico = async (req, res) => {
     const { id } = req.params;
 
     try {
         const [result] = await sql.query(
-            "UPDATE HORARIOS SET ESTADO='CANCELADO' WHERE ID_HORARIO = ?",
+            "DELETE FROM MEDICO WHERE ID_MEDICO = ?",
             [id]
         );
 
         result.affectedRows > 0
-            ? res.json({ message: "Horario cancelado" })
-            : res.status(404).json({ message: "Horario no encontrado" });
+            ? res.json({ message: "Médico eliminado correctamente" })
+            : res.status(404).json({ message: "Médico no encontrado" });
 
     } catch (error) {
-        res.status(500).json({ message: "Error al cancelar horario", error });
-    }
-};
-
-
-// Eliminar horario (solo si está libre)
-export const eliminarHorario = async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const [horario] = await sql.query(
-            "SELECT ESTADO FROM HORARIOS WHERE ID_HORARIO = ?",
-            [id]
-        );
-
-        if (horario.length === 0)
-            return res.status(404).json({ message: "Horario no encontrado" });
-
-        if (horario[0].ESTADO !== "LIBRE")
-            return res.status(400).json({
-                message: "No se puede eliminar un horario ocupado o cancelado"
-            });
-
-        await sql.query("DELETE FROM HORARIOS WHERE ID_HORARIO = ?", [id]);
-
-        res.json({ message: "Horario eliminado correctamente" });
-
-    } catch (error) {
-        res.status(500).json({ message: "Error al eliminar horario", error });
+        res.status(500).json({ message: "Error al eliminar médico", error });
     }
 };

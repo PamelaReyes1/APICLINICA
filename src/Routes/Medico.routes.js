@@ -1,25 +1,21 @@
 import { Router } from "express";
 
 import {
-    getHorarios,
-    getHorarioById,
-    getHorariosPorMedico,
-    getHorariosDisponiblesPorMedico,
-    crearHorario,
-    actualizarHorario,
-    cancelarHorario,
-    eliminarHorario
-} from "../Controladores/Horarios.js";
+    getMedicos,
+    getMedicoById,
+    getMedicosPorEspecialidad,
+    crearMedico,
+    actualizarMedico,
+    eliminarMedico
+} from "../Controladores/Medico.js";
 
 const router = Router();
 
-router.get("/horarios", getHorarios);
-router.get("/horarios/:id", getHorarioById);
-router.get("/horarios/medico/:id_medico", getHorariosPorMedico);
-router.get("/horarios/disponibles/:id_medico", getHorariosDisponiblesPorMedico);
-router.post("/horarios", crearHorario);
-router.put("/horarios/:id", actualizarHorario);
-router.put("/horarios/cancelar/:id", cancelarHorario);
-router.delete("/horarios/:id", eliminarHorario);
+router.get("/medicos", getMedicos);
+router.get("/medicos/:id", getMedicoById);
+router.get("/medicos/especialidad/:id_especialidad", getMedicosPorEspecialidad);
+router.post("/medicos", crearMedico);
+router.put("/medicos/:id", actualizarMedico);
+router.delete("/medicos/:id", eliminarMedico);
 
 export default router;
