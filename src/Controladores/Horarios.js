@@ -61,7 +61,12 @@ export const crearHorario = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({ message: "Error al crear horario", error });
+        console.error("Error SQL al crear horario:", error);
+
+        res.status(500).json({
+            message: "Error al crear horario",
+            error: error.sqlMessage || error.message || "Error desconocido"
+        });
     }
 };
 export const actualizarHorario = async (req, res) => {
