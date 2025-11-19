@@ -241,3 +241,20 @@ export const actualizarContrasena = async (req, res) => {
         res.status(500).json({ message: "Error al actualizar contraseña", error });
     }
 };
+
+export const cambiarEstadoUsuario = async (req, res) => {
+    const { id } = req.params;
+    const { estado } = req.body;
+
+    try {
+        await sql.query(
+            "UPDATE USUARIO SET ESTADO=? WHERE ID_USUARIO=?",
+            [estado, id]
+        );
+
+        res.json({ message: "Estado actualizado correctamente" });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error al cambiar estado", error });
+    }
+};
