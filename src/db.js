@@ -1,4 +1,4 @@
-import {createPool} from "mysql2/promise";
+import {sql} from "mysql2/promise";
 
  import {
     BD_HOST,
@@ -8,7 +8,7 @@ import {createPool} from "mysql2/promise";
     BD_PORT
  } from './config.js'
 
- export const conmysql=createPool({
+ export const sql=createPool({
     host:BD_HOST,
     database:BD_DATABASE,
     user:BD_USER,
