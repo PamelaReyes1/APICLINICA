@@ -1,0 +1,28 @@
+import { Router } from "express";
+
+import {
+    getUsuarios,
+    BuscarUsuarioPorId,
+    crearUsuario,
+    actualizarUsuario,
+    eliminarUsuario,
+    verificarCorreo,
+    loginUsuario,
+    actualizarContrasena,
+    cambiarEstadoUsuario
+} from "../Controladores/Usuario.js";
+
+const router = Router();
+
+
+router.get("/usuarios", getUsuarios);
+router.get("/usuarios/:id", BuscarUsuarioPorId);
+router.post("/usuarios", crearUsuario);
+router.put("/usuarios/:id", actualizarUsuario);
+router.delete("/usuarios/:id", eliminarUsuario);
+router.get("/usuarios/verificar-correo/:correo", verificarCorreo);
+router.post("/usuarios/login", loginUsuario);
+router.put("/usuarios/:id/contrasena", actualizarContrasena);
+router.put("/usuarios/:id/estado", cambiarEstadoUsuario);
+
+export default router;
