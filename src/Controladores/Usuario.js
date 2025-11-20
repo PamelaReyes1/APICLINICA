@@ -339,7 +339,7 @@ export const actualizarUsuario2 = async (req, res) => {
     const userId = req.params.id;
 
     // 1. Obtener datos actuales
-    const [rows] = await db.query(
+    const [rows] = await sql.query(
       "SELECT * FROM USUARIO WHERE ID_USUARIO = ?",
       [userId]
     );
@@ -365,7 +365,7 @@ export const actualizarUsuario2 = async (req, res) => {
     };
 
     // 3. Ejecutar actualización segura
-    await db.query(
+    await sql.query(
       `UPDATE USUARIO SET
         NOMBRE = ?, 
         APELLIDO = ?, 
