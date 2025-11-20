@@ -47,14 +47,25 @@ export const getMedicosPorEspecialidad = async (req, res) => {
 
     try {
         const [result] = await sql.query(
-            "SELECT * FROM MEDICO WHERE ID_ESPECIALIDAD = ?",
+            `SELECT 
+                M.ID_MEDICO,
+                U.NOMBRE,
+                U.APELLIDO,
+                U.CORREO_ELECTRONICO,
+                U.TELEFONO,
+                M.ID_ESPECIALIDAD
+             FROM MEDICO M
+             JOIN USUARIO U ON M.ID_USUARIO = U.ID_USUARIO
+             WHERE M.ID_ESPECIALIDAD = ?`,
             [id_especialidad]
         );
 
         res.json(result);
-
     } catch (error) {
-        res.status(500).json({ message: "Error al obtener médicos por especialidad", error });
+        res.status(500).json({
+            message: "Error al obtener médicos por especialidad",
+            error
+        });
     }
 };
 
