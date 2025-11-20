@@ -160,17 +160,25 @@ export const getCitasPorVariosMedicos = async (req, res) => {
                 H.HORA_FIN,
 
                 M.ID_MEDICO,
+                M.CONSULTORIO,
+                E.DESCRIPCION AS ESPECIALIDAD,
+
                 U.NOMBRE AS MEDICO_NOMBRE,
                 U.APELLIDO AS MEDICO_APELLIDO,
 
-                E.DESCRIPCION AS ESPECIALIDAD,
-                M.CONSULTORIO
+                -- DATOS DEL PACIENTE
+                PU.NOMBRE AS PACIENTE_NOMBRE,
+                PU.APELLIDO AS PACIENTE_APELLIDO
 
             FROM CITA_MEDICA C
             INNER JOIN HORARIOS H ON H.ID_HORARIO = C.ID_HORARIO
             INNER JOIN MEDICO M ON M.ID_MEDICO = H.ID_MEDICO
             INNER JOIN USUARIO U ON U.ID_USUARIO = M.ID_USUARIO
             INNER JOIN ESPECIALIDADES E ON E.ID_ESPECIALIDAD = M.ID_ESPECIALIDAD
+
+            -- UNIENDO PACIENTE -> USUARIO
+            INNER JOIN PACIENTE P ON P.ID_PACIENTE = C.ID_PACIENTE
+            INNER JOIN USUARIO PU ON PU.ID_USUARIO = P.ID_USUARIO
 
             WHERE M.ID_MEDICO IN (?)
             ORDER BY H.FECHA DESC
@@ -186,4 +194,3 @@ export const getCitasPorVariosMedicos = async (req, res) => {
         });
     }
 };
-
