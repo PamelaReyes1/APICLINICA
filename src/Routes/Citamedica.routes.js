@@ -25,5 +25,6 @@ router.put("/citas/actualizar/:id", actualizarCita);
 router.put("/citas/actualizar/:id", actualizarCita);
 router.delete("/citas/:id", eliminarCita);
 router.put("/estado/:id", actualizarEstadoCita);
-
+ 
+ 
 export default router;
