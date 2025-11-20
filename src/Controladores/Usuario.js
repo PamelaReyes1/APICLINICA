@@ -334,3 +334,67 @@ export const getCitasPorPaciente = async (req, res) => {
         });
     }
 };
+export const actualizarUsuario2 = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // 1. Obtener datos actuales
+    const [rows] = await db.query(
+      "SELECT * FROM USUARIO WHERE ID_USUARIO = ?",
+      [userId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const usuarioActual = rows[0];
+
+    // 2. Mantener los valores actuales si no se enviaron
+    const data = {
+      NOMBRE: req.body.NOMBRE ?? usuarioActual.NOMBRE,
+      APELLIDO: req.body.APELLIDO ?? usuarioActual.APELLIDO,
+      CORREO_ELECTRONICO: req.body.CORREO_ELECTRONICO ?? usuarioActual.CORREO_ELECTRONICO,
+      TELEFONO: req.body.TELEFONO ?? usuarioActual.TELEFONO,
+      UBICACION: req.body.UBICACION ?? usuarioActual.UBICACION,
+      FOTO: req.body.FOTO ?? usuarioActual.FOTO,
+      ESTADO: req.body.ESTADO ?? usuarioActual.ESTADO,
+
+      // NO SE TOCA EL ROL
+      ID_ROL: usuarioActual.ID_ROL
+    };
+
+    // 3. Ejecutar actualización segura
+    await db.query(
+      `UPDATE USUARIO SET
+        NOMBRE = ?, 
+        APELLIDO = ?, 
+        CORREO_ELECTRONICO = ?, 
+        TELEFONO = ?, 
+        UBICACION = ?, 
+        FOTO = ?, 
+        ESTADO = ?
+      WHERE ID_USUARIO = ?`,
+      [
+        data.NOMBRE,
+        data.APELLIDO,
+        data.CORREO_ELECTRONICO,
+        data.TELEFONO,
+        data.UBICACION,
+        data.FOTO,
+        data.ESTADO,
+        userId
+      ]
+    );
+
+    res.json({
+      message: "Usuario actualizado correctamente",
+      ...data,
+      ID_USUARIO: userId
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error al actualizar usuario", error });
+  }
+};

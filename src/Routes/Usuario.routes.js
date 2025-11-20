@@ -11,7 +11,8 @@ import {
     actualizarContrasena,
     cambiarEstadoUsuario,
     getUsuariosXcellOCorreo,
-    getCitasPorPaciente
+    getCitasPorPaciente,
+    actualizarUsuario2
 } from "../Controladores/Usuario.js";
 
 const router = Router();
@@ -23,6 +24,7 @@ router.get("/usuarios/buscar/:busqueda", getUsuariosXcellOCorreo);
 router.get("/usuarios/:id", BuscarUsuarioPorId);
 router.post("/usuarios", crearUsuario);
 router.put("/usuarios/:id", actualizarUsuario);
+router.put("/usuarios2/:id",actualizarUsuario2);
 router.delete("/usuarios/:id", eliminarUsuario);
 router.get("/usuarios/verificar-correo/:correo", verificarCorreo);
 router.post("/usuarios/login", loginUsuario);
