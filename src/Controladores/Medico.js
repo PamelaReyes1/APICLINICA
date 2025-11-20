@@ -25,7 +25,7 @@ export const getMedicoById = async (req, res) => {
         res.status(500).json({ message: "Error al obtener médico", error });
     }
 };
-export const getMedicoByIdUsu= async (req, res) => {
+export const getMedicoByIdUsu = async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -35,7 +35,7 @@ export const getMedicoByIdUsu= async (req, res) => {
         );
 
         result.length > 0
-            ? res.json(result[0])
+            ? res.json(result)
             : res.status(404).json({ message: "Médico no encontrado" });
 
     } catch (error) {
