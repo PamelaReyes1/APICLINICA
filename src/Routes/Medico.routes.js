@@ -3,16 +3,18 @@ import { Router } from "express";
 import {
     getMedicos,
     getMedicoById,
+    getMedicoByIdUsu,
     getMedicosPorEspecialidad,
     crearMedico,
     actualizarMedico,
-    eliminarMedico
+    eliminarMedico,
 } from "../Controladores/Medico.js";
 
 const router = Router();
 
 router.get("/medicos", getMedicos);
 router.get("/medicos/:id", getMedicoById);
+router.get("/medicosUsuario/:id", getMedicoByIdUsu);
 router.get("/medicos/especialidad/:id_especialidad", getMedicosPorEspecialidad);
 router.post("/medicos", crearMedico);
 router.put("/medicos/:id", actualizarMedico);
