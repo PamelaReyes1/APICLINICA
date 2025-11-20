@@ -8,6 +8,7 @@ import {
     crearMedico,
     actualizarMedico,
     eliminarMedico,
+    getCitasPorVariosMedicos
 } from "../Controladores/Medico.js";
 
 const router = Router();
@@ -19,5 +20,6 @@ router.get("/medicos/especialidad/:id_especialidad", getMedicosPorEspecialidad);
 router.post("/medicos", crearMedico);
 router.put("/medicos/:id", actualizarMedico);
 router.delete("/medicos/:id", eliminarMedico);
+router.post("/medicos/citas", getCitasPorVariosMedicos);
 
 export default router;
