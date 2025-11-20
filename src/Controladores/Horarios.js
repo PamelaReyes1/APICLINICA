@@ -137,16 +137,19 @@ export const getHorariosDisponiblesPorMedico = async (req, res) => {
 
     try {
         const [result] = await sql.query(
-            `SELECT * 
-             FROM HORARIOS 
-             WHERE ID_MEDICO = ? 
-               AND ID_ESPECIALIDAD = ?
-               AND ESTADO = 'LIBRE'
-             ORDER BY FECHA, HORA_INICIO`,
+            `SELECT 
+                H.*
+             FROM HORARIOS H
+             JOIN MEDICO M ON H.ID_MEDICO = M.ID_MEDICO
+             WHERE H.ID_MEDICO = ?
+               AND M.ID_ESPECIALIDAD = ?
+               AND H.ESTADO = 'LIBRE'
+             ORDER BY H.FECHA, H.HORA_INICIO`,
             [id_medico, id_especialidad]
         );
 
         res.json(result);
+
     } catch (error) {
         res.status(500).json({
             message: "Error al obtener horarios disponibles del médico",
@@ -154,4 +157,3 @@ export const getHorariosDisponiblesPorMedico = async (req, res) => {
         });
     }
 };
-
