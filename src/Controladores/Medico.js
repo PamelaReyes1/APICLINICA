@@ -25,6 +25,23 @@ export const getMedicoById = async (req, res) => {
         res.status(500).json({ message: "Error al obtener médico", error });
     }
 };
+export const getMedicoByIdUsu= async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [result] = await sql.query(
+            "SELECT * FROM MEDICO WHERE ID_USUARIO  = ?",
+            [id]
+        );
+
+        result.length > 0
+            ? res.json(result[0])
+            : res.status(404).json({ message: "Médico no encontrado" });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error al obtener médico", error });
+    }
+};
 export const getMedicosPorEspecialidad = async (req, res) => {
     const { id_especialidad } = req.params;
 
