@@ -132,3 +132,24 @@ export const eliminarHorario = async (req, res) => {
         res.status(500).json({ message: "Error al eliminar horario", error });
     }
 };
+export const getHorariosDisponiblesPorMedico = async (req, res) => {
+    const { id_medico } = req.params;
+
+    try {
+        const [result] = await sql.query(
+            `SELECT * 
+             FROM HORARIOS 
+             WHERE ID_MEDICO = ? 
+             AND ESTADO = 'LIBRE'
+             ORDER BY FECHA, HORA_INICIO`,
+            [id_medico]
+        );
+
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({
+            message: "Error al obtener horarios disponibles del médico",
+            error
+        });
+    }
+};

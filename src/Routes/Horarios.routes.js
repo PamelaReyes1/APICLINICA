@@ -7,7 +7,8 @@ import {
     crearHorario,
     actualizarHorario,
     cambiarEstadoHorario,
-    eliminarHorario
+    eliminarHorario,
+    getHorariosDisponiblesPorMedico
 } from "../Controladores/Horarios.js";
 
 const router = Router();
@@ -19,5 +20,6 @@ router.post("/horarios", crearHorario);
 router.put("/horarios/:id", actualizarHorario);
 router.patch("/horarios/estado/:id", cambiarEstadoHorario);
 router.delete("/horarios/:id", eliminarHorario);
+router.get("/horarios/disponibles/:id_medico", getHorariosDisponiblesPorMedico);
 
 export default router;
