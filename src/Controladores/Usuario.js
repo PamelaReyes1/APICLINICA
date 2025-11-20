@@ -12,6 +12,36 @@ export const getUsuarios = async (req, res) => {
     }
 };
 
+export const getUsuariosXcellOCorreo = async (req, res) => {
+    const { busqueda } = req.params; // correo o teléfono enviado desde Angular
+
+    if (!busqueda) {
+        return res.status(400).json({ message: "Debe enviar un correo o teléfono" });
+    }
+
+    try {
+        const [result] = await sql.query(
+            `SELECT * 
+             FROM USUARIO 
+             WHERE CORREO_ELECTRONICO = ? 
+                OR TELEFONO = ?`,
+            [busqueda, busqueda]
+        );
+
+        res.json({
+            total: result.length,
+            data: result
+        });
+
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({
+            message: "Error al obtener usuarios por correo o teléfono",
+            error
+        });
+    }
+};
+
 
 export const BuscarUsuarioPorId = async (req, res) => {
     const { id } = req.params;
@@ -68,7 +98,7 @@ export const crearUsuario = async (req, res) => {
                 nombre,
                 apellido,
                 correo_electronico,
-                hashPassword, 
+                hashPassword,
                 telefono,
                 ubicacion,
                 id_rol,

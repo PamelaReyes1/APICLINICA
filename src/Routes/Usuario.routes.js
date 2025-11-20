@@ -9,13 +9,15 @@ import {
     verificarCorreo,
     loginUsuario,
     actualizarContrasena,
-    cambiarEstadoUsuario
+    cambiarEstadoUsuario,
+    getUsuariosXcellOCorreo
 } from "../Controladores/Usuario.js";
 
 const router = Router();
 
 
 router.get("/usuarios", getUsuarios);
+router.get("/usuarios/buscar/:busqueda", getUsuariosXcellOCorreo);
 router.get("/usuarios/:id", BuscarUsuarioPorId);
 router.post("/usuarios", crearUsuario);
 router.put("/usuarios/:id", actualizarUsuario);
