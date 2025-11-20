@@ -139,3 +139,51 @@ export const eliminarMedico = async (req, res) => {
         res.status(500).json({ message: "Error al eliminar médico", error });
     }
 };
+export const getCitasPorVariosMedicos = async (req, res) => {
+    const { ids } = req.body; // array de IDs de médico
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ message: "Debe enviar un array de IDs de médicos" });
+    }
+
+    try {
+        const [result] = await sql.query(`
+            SELECT 
+                C.ID_CITA,
+                C.ID_HORARIO,
+                C.ID_PACIENTE,
+                C.ESTADO,
+                C.FECHA_SOLICITUD,
+
+                H.FECHA,
+                H.HORA_INICIO,
+                H.HORA_FIN,
+
+                M.ID_MEDICO,
+                U.NOMBRE AS MEDICO_NOMBRE,
+                U.APELLIDO AS MEDICO_APELLIDO,
+
+                E.DESCRIPCION AS ESPECIALIDAD,
+                M.CONSULTORIO
+
+            FROM CITA_MEDICA C
+            INNER JOIN HORARIOS H ON H.ID_HORARIO = C.ID_HORARIO
+            INNER JOIN MEDICO M ON M.ID_MEDICO = H.ID_MEDICO
+            INNER JOIN USUARIO U ON U.ID_USUARIO = M.ID_USUARIO
+            INNER JOIN ESPECIALIDADES E ON E.ID_ESPECIALIDAD = M.ID_ESPECIALIDAD
+
+            WHERE M.ID_MEDICO IN (?)
+            ORDER BY H.FECHA DESC
+        `, [ids]);
+
+        res.json(result);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error al obtener citas del médico",
+            error
+        });
+    }
+};
+
