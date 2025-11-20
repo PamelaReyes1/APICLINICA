@@ -20,6 +20,6 @@ router.post("/horarios", crearHorario);
 router.put("/horarios/:id", actualizarHorario);
 router.patch("/horarios/estado/:id", cambiarEstadoHorario);
 router.delete("/horarios/:id", eliminarHorario);
-router.get("/horarios/disponibles/:id_medico", getHorariosDisponiblesPorMedico);
+router.get('/horarios/disponibles/:id_medico/:id_especialidad', getHorariosDisponiblesPorMedico);
 
 export default router;

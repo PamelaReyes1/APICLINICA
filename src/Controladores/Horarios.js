@@ -133,16 +133,17 @@ export const eliminarHorario = async (req, res) => {
     }
 };
 export const getHorariosDisponiblesPorMedico = async (req, res) => {
-    const { id_medico } = req.params;
+    const { id_medico, id_especialidad } = req.params;
 
     try {
         const [result] = await sql.query(
             `SELECT * 
              FROM HORARIOS 
              WHERE ID_MEDICO = ? 
-             AND ESTADO = 'LIBRE'
+               AND ID_ESPECIALIDAD = ?
+               AND ESTADO = 'LIBRE'
              ORDER BY FECHA, HORA_INICIO`,
-            [id_medico]
+            [id_medico, id_especialidad]
         );
 
         res.json(result);
@@ -153,3 +154,4 @@ export const getHorariosDisponiblesPorMedico = async (req, res) => {
         });
     }
 };
+
