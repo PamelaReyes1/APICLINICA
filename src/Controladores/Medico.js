@@ -184,6 +184,7 @@ export const getCitasPorVariosMedicos = async (req, res) => {
 
             WHERE M.ID_MEDICO IN (?)
             ORDER BY H.FECHA DESC
+            
         `, [ids]);
 
         res.json(result);
