@@ -18,7 +18,7 @@ const router = Router();
 
 
 router.get("/usuarios", getUsuarios);
-router.get("/citas/paciente/:id_paciente", getCitasPorPaciente); 
+router.get("/citas/paciente2/:id_paciente", getCitasPorPaciente); 
 router.get("/usuarios/buscar/:busqueda", getUsuariosXcellOCorreo);
 router.get("/usuarios/:id", BuscarUsuarioPorId);
 router.post("/usuarios", crearUsuario);
