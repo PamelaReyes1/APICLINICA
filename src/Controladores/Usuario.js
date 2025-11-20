@@ -287,4 +287,50 @@ export const cambiarEstadoUsuario = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: "Error al cambiar estado", error });
     }
+
+};
+export const getCitasPorPaciente = async (req, res) => {
+    const { id_paciente } = req.params;
+
+    try {
+        const [result] = await sql.query(`
+      SELECT 
+        C.ID_CITA,
+        C.ID_HORARIO,
+        C.ID_PACIENTE,
+        C.ESTADO,
+        C.FECHA_SOLICITUD,
+        H.FECHA,
+        H.HORA_INICIO,
+        H.HORA_FIN,
+
+        M.ID_MEDICO,
+        M.NOMBRE AS MEDICO_NOMBRE,
+        M.APELLIDO AS MEDICO_APELLIDO,
+
+        E.ID_ESPECIALIDAD,
+        E.NOMBRE AS ESPECIALIDAD,
+
+        CO.ID_CONSULTORIO,
+        CO.NOMBRE AS CONSULTORIO
+
+      FROM CITA_MEDICA C
+      INNER JOIN HORARIOS H ON H.ID_HORARIO = C.ID_HORARIO
+      INNER JOIN MEDICOS M ON M.ID_MEDICO = H.ID_MEDICO
+      INNER JOIN ESPECIALIDADES E ON E.ID_ESPECIALIDAD = M.ID_ESPECIALIDAD
+      INNER JOIN CONSULTORIOS CO ON CO.ID_CONSULTORIO = M.ID_CONSULTORIO
+
+      WHERE C.ID_PACIENTE = ?
+      ORDER BY H.FECHA DESC
+    `, [id_paciente]);
+
+        res.json(result);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error al obtener citas del paciente",
+            error
+        });
+    }
 };
