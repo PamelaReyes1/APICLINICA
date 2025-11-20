@@ -212,3 +212,28 @@ export const eliminarCita = async (req, res) => {
         res.status(500).json({ message: "Error al eliminar cita", error });
     }
 };
+// Actualizar SOLO el estado de una cita
+export const actualizarEstadoCita = async (req, res) => {
+    const { id } = req.params;
+    const { estado } = req.body;
+
+    if (!estado) {
+        return res.status(400).json({ message: "Debe enviar el estado" });
+    }
+
+    try {
+        const [result] = await sql.query(
+            "UPDATE CITA_MEDICA SET ESTADO = ? WHERE ID_CITA = ?",
+            [estado, id]
+        );
+
+        if (result.affectedRows > 0) {
+            return res.json({ message: "Estado actualizado correctamente" });
+        } else {
+            return res.status(404).json({ message: "Cita no encontrada" });
+        }
+
+    } catch (error) {
+        res.status(500).json({ message: "Error al actualizar estado de la cita", error });
+    }
+};

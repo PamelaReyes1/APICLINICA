@@ -9,6 +9,7 @@ import {
     cancelarCita,
     actualizarCita,
     eliminarCita,
+    actualizarEstadoCita
 } from "../Controladores/CitaMedica.js";
 
 const router = express.Router();
@@ -23,5 +24,6 @@ router.put("/citas/cancelar/:id", cancelarCita);
 router.put("/citas/actualizar/:id", actualizarCita);
 router.put("/citas/actualizar/:id", actualizarCita);
 router.delete("/citas/:id", eliminarCita);
+router.put("/estado/:id", actualizarEstadoCita);
 
 export default router;
