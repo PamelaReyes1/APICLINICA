@@ -34,7 +34,7 @@ export const crearCita = async (req, res) => {
     try {
         // Verificar si ya existe una cita en ese horario
         const [existe] = await sql.query(
-            "SELECT * FROM CITA_MEDICA WHERE ID_HORARIO = ? AND ESTADO <> 'CANCELADA'",
+            "SELECT * FROM CITA_MEDICA WHERE ID_HORARIO = ? AND ESTADO <> 'CANCELADA' AND ESTADO <> 'PENDIENTE'",
             [id_horario]
         );
 
