@@ -141,7 +141,7 @@ export const crearRecordatorio = async (req, res) => {
         const [result] = await sql.query(
             `INSERT INTO RECORDATORIO 
              (ID_MEDICO, ID_PACIENTE, ID_CITA, FECHA_ENVIO, MENSAJE, ESTADO)
-             VALUES (?, ?, ?, ?, ?, 'PENDIENTE')`,
+             VALUES (?, ?, ?, ?, ?, 'ENVIADO')`,
             [id_medico, id_paciente, id_cita, fecha_envio || null, mensaje]
         );
 
