@@ -10,6 +10,7 @@ import MedicoRoutes from './Routes/Medico.routes.js';
 import RolesGRoutes from './Routes/RolesG.routes.js';
 import UsuarioRoutes from './Routes/Usuario.routes.js';
 import FuncionesRoutes from './Routes/Funciones.routes.js';
+import RecordatorioRoutes from './Routes/Recordatorio.routes.js';
 
 
 const app = express()
@@ -31,6 +32,7 @@ app.use('/api', MedicoRoutes);
 app.use('/api', RolesGRoutes);
 app.use('/api', UsuarioRoutes);
 app.use('/api', FuncionesRoutes);
+app.use('/api', RecordatorioRoutes);
 
 
 
